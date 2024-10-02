@@ -31,6 +31,20 @@ def predict_api():
     output=regmodel.predict(data)
     return jsonify(output[0]) #jsonify(...) : Cette méthode renvoie la prédiction dans un format JSON pour que le client qui a fait la requête POST puisse la récupérer.
 
+@app.route("/predict", methods=["POST"])
+def predict():
+    # Extracting data from the form and converting to float
+    data = [float(x) for x in request.form.values()]  # Assuming you are getting input from a form
+    final_input = np.array(data).reshape(1, -1)  # Reshape the data to fit the model input
+    print(final_input)
+    
+    # Making the prediction
+    output = regmodel.predict(final_input)[0]
+    
+    # Render the template with the prediction
+    return render_template("home.html", prediction_text="The House price prediction is ${:.2f}".format(output))
+
+
 
 if __name__=="__main__" :
     app.run(debug=True)
